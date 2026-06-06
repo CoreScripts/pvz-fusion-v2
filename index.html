@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Plants Vs Zombies Hybrids</title>
+        <link rel="preconnect" href="https://bridge.playgama.com">
+        <style>
+            html, body {
+                width: 100%;
+                height: 100%;
+                padding: 0px;
+                margin: 0px;
+                overflow: hidden;
+                background: #242424;
+            }
+            #unity-canvas {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="unity-canvas" class="fullscreen-canvas"></canvas>
+        
+        <script>
+            // Wait for the Unity framework to load
+            var canvas = document.getElementById('unity-canvas');
+            
+            function createUnityGame() {
+                var config = {
+                    dataUrl: "Build/PvzFM.data.unityweb",
+                    frameworkUrl: "Build/PvzFM.framework.js.unityweb",
+                    codeUrl: "Build/PvzFM.wasm.unityweb",
+                    streamingAssetsUrl: "StreamingAssets",
+                    companyName: "DefaultCompany",
+                    productName: "PlantsVsZombies",
+                    productVersion: "1.0"
+                };
+                
+                createUnityInstance(canvas, config, function(progress) {
+                    console.log("Loading: " + progress * 100 + "%");
+                }).then(function(unityInstance) {
+                    console.log("Game loaded successfully!");
+                    window.unityInstance = unityInstance;
+                }).catch(function(message) {
+                    console.error("Error loading game:", message);
+                });
+            }
+            
+            // Wait for the Unity loader to be available
+            if (typeof createUnityInstance !== 'undefined') {
+                createUnityGame();
+            } else {
+                window.addEventListener('load', function() {
+                    // The framework.js should define createUnityInstance
+                    setTimeout(function() {
+                        if (typeof createUnityInstance !== 'undefined') {
+                            createUnityGame();
+                        } else {
+                            console.error("Unity loader not found. Check if Build/PvzFM.framework.js is loading.");
+                        }
+                    }, 100);
+                });
+            }
+        </script>
+        
+        <!-- Load the massive Unity framework file -->
+        <script src="Build/PvzFM.framework.js.unityweb"></script>
+    </body>
+</html>
