@@ -2,63 +2,59 @@
 <html lang="en-us">
     <head>
         <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Plants Vs Zombies Hybrids</title>
+        <link rel="preconnect" href="https://bridge.playgama.com">
         <style>
-            body {
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-                background: #1a1a1a;
-            }
-            #unity-canvas {
+            html, body {
                 width: 100%;
-                height: 100vh;
-                display: block;
+                height: 100%;
+                padding: 0px;
+                margin: 0px;
+                overflow: hidden;
+            }
+            .fullscreen-canvas {
+                background: #242424;
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0px;
+                left: 0px;
             }
         </style>
     </head>
     <body>
-        <canvas id="unity-canvas"></canvas>
+        <canvas id="canvas" class="fullscreen-canvas"></canvas>
         
         <script>
-            var canvas = document.getElementById('unity-canvas');
+            var canvas = document.getElementById('canvas');
             
             var config = {
-                dataUrl: "Build/PvzFM.data.unityweb",
-                frameworkUrl: "Build/PvzFM.framework.js.unityweb", 
-                codeUrl: "Build/PvzFM.wasm.unityweb",
-                streamingAssetsUrl: "StreamingAssets",
-                companyName: "DefaultCompany",
-                productName: "PlantsVsZombies"
+                dataUrl: "cmpe6ltov004an30htbub9kl7/Build/PvzFM.data.unityweb",
+                frameworkUrl: "cmpe6ltov004an30htbub9kl7/Build/PvzFM.framework.js.unityweb",
+                codeUrl: "cmpe6ltov004an30htbub9kl7/Build/PvzFM.wasm.unityweb",
+                streamingAssetsUrl: "cmpe6ltov004an30htbub9kl7/StreamingAssets"
             };
             
-            function launchGame() {
-                if (typeof createUnityInstance === 'undefined') {
-                    console.log("Waiting for Unity loader...");
-                    setTimeout(launchGame, 100);
-                    return;
+            function launch() {
+                if (typeof createUnityInstance !== 'undefined') {
+                    createUnityInstance(canvas, config, function(progress) {
+                        console.log((progress * 100).toFixed(1) + '%');
+                    }).then(function(instance) {
+                        console.log('Game ready!');
+                    }).catch(function(err) {
+                        console.error('Game error:', err);
+                    });
+                } else {
+                    setTimeout(launch, 100);
                 }
-                
-                console.log("Launching game...");
-                createUnityInstance(canvas, config, function(progress) {
-                    console.log(Math.round(progress * 100) + '%');
-                }).then(function(instance) {
-                    console.log('Game ready!');
-                    window.gameInstance = instance;
-                }).catch(function(err) {
-                    console.error('Game error:', err);
-                });
             }
             
-            launchGame();
+            launch();
         </script>
         
-        <!-- Load order matters: loader.js first, then framework -->
-        <script src="Build/PvzFM.loader.js"></script>
-        <script src="Build/PvzFM.framework.js.unityweb"></script>
+        <script src="cmpe6ltov004an30htbub9kl7/Build/PvzFM.loader.js"></script>
+        <script src="cmpe6ltov004an30htbub9kl7/Build/PvzFM.framework.js.unityweb"></script>
+        <script src="cmpe6ltov004an30htbub9kl7/playgama-bridge-unity.js"></script>
     </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> 4d5ebcb9910a0d1371ba06ee5ab3ef5dc85d71ec
