@@ -2,32 +2,58 @@
 <html lang="en-us">
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Plants Vs Zombies Hybrids</title>
-        <link rel="preconnect" href="https://bridge.playgama.com">
         <style>
-            html, body {
-                width: 100%;
-                height: 100%;
-                padding: 0px;
-                margin: 0px;
+            body {
+                margin: 0;
+                padding: 0;
                 overflow: hidden;
+                background: #1a1a1a;
             }
-            .fullscreen-canvas {
-                background: #242424;
+            canvas {
+                width: 100%;
+                height: 100vh;
+                display: block;
+            }
+            #start-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
                 width: 100%;
                 height: 100%;
-                position: absolute;
-                top: 0px;
-                left: 0px;
+                background: rgba(0,0,0,0.95);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                cursor: pointer;
+                font-family: Arial, sans-serif;
+            }
+            #start-button {
+                background: #4CAF50;
+                color: white;
+                font-size: 28px;
+                padding: 20px 40px;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            #start-button:hover {
+                background: #45a049;
             }
         </style>
     </head>
     <body>
-        <canvas id="canvas" class="fullscreen-canvas"></canvas>
+        <canvas id="canvas"></canvas>
+        
+        <div id="start-overlay">
+            <button id="start-button">Click to Start Game</button>
+        </div>
         
         <script>
             var canvas = document.getElementById('canvas');
+            var gameInstance = null;
             
             var config = {
                 dataUrl: "cmpe6ltov004an30htbub9kl7/Build/PvzFM.data.unityweb",
@@ -36,21 +62,33 @@
                 streamingAssetsUrl: "cmpe6ltov004an30htbub9kl7/StreamingAssets"
             };
             
-            function launch() {
-                if (typeof createUnityInstance !== 'undefined') {
-                    createUnityInstance(canvas, config, function(progress) {
-                        console.log((progress * 100).toFixed(1) + '%');
-                    }).then(function(instance) {
-                        console.log('Game ready!');
-                    }).catch(function(err) {
-                        console.error('Game error:', err);
-                    });
-                } else {
-                    setTimeout(launch, 100);
+            // Don't start Unity until user clicks
+            document.getElementById('start-button').onclick = function() {
+                document.getElementById('start-overlay').style.display = 'none';
+                
+                // Resume audio context if needed
+                if (canvas && canvas.dispatchEvent) {
+                    canvas.dispatchEvent(new Event('click'));
                 }
-            }
-            
-            launch();
+                
+                // Start loading Unity
+                function launch() {
+                    if (typeof createUnityInstance !== 'undefined') {
+                        createUnityInstance(canvas, config, function(progress) {
+                            console.log(Math.round(progress * 100) + '%');
+                        }).then(function(instance) {
+                            console.log('Game ready!');
+                            gameInstance = instance;
+                        }).catch(function(err) {
+                            console.error('Game error:', err);
+                        });
+                    } else {
+                        setTimeout(launch, 100);
+                    }
+                }
+                
+                launch();
+            };
         </script>
         
         <script src="cmpe6ltov004an30htbub9kl7/Build/PvzFM.loader.js"></script>
